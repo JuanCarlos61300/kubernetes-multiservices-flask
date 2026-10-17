@@ -1,0 +1,41 @@
+#backend Flask
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: flasker/api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MYSQL_HOST
+              value: "mysql-service"
+            - name: MYSQL_DATABASE
+              value: "test_db"
+            - name: MYSQL_USER
+              value: "appuser"
+            - name: MYSQL_PASSWORD
+              value: "apppassword"
+---
+#backend-service:5000
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 5000
